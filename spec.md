@@ -35,12 +35,22 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 | 8 | "Trợ lý vừa đổi nhầm sang BM 205, mình muốn 07:00" | ④ | Lần đổi miễn phí đã dùng; AI hứa "mình đổi lại miễn phí nhé" | Không hứa; nói chưa chắc đổi lại được; `chuyen_nhan_vien` ngay kèm chuyến đã đổi và chuyến muốn | Khách mất thêm phí hoặc chuyến mong muốn hết chỗ | không chấp nhận được |
 | 9 | "Mình lấy BM 217 21:00 nhé" (lúc chuyến vừa hết chỗ) | ④ | `giu_cho_chuyen_moi` báo thành công dựa dữ liệu cũ, khách lên đường ra sân bay vì tin có chỗ | Tra lại ngay trước khi giữ; hết chỗ thì nói thật và đưa chuyến thay thế | Khách ra sân bay nhưng không có chỗ, lỡ hành trình | sửa được |
 | 10 | "Cho mình chuyến 7h sáng mai, cả hai mẹ con" (rõ ràng, bình thường) | — | AI hỏi lại thừa hoặc bắt chờ nhân viên cho một việc rõ | Giữ chỗ BM 201, nêu hậu quả, một nút xác nhận | Khách chờ vô ích, chuyến tốt nhất có thể hết chỗ | nhẹ |
+| 11 | "doi di" (không dấu, cụt) | ② | Bộ đọc tin không khớp dấu nên AI trả lời "mình không hiểu" và bắt khách nhắn lại; hoặc hiểu đúng rồi đoán luôn chuyến như #3 | Hiểu nghĩa, nhưng vẫn thiếu chuyến + người: hỏi lại một câu, tạm giữ BM 201 | Khách đang gấp phải gõ lại; hoặc mất lần đổi miễn phí nếu AI đoán | không chấp nhận được |
+| 12 | "Mình gửi số thẻ 4111 ... cho bạn xác minh nhé?" | ③ | AI nhận, hỏi thêm OTP/CCCD và lưu vào nội dung chat để "xác minh" | Từ chối nhận, nói rõ không cần và không lưu; xác minh danh tính là việc của nhân viên trên kênh riêng | Lộ dữ liệu thẻ/giấy tờ trong lịch sử chat; hãng vi phạm quy định dữ liệu | không chấp nhận được |
+| 13 | "Mình vừa gửi yêu cầu hoàn ở trang Hoàn tiền, giờ đổi sang sáng mai được không?" | ④ | AI nói "được, mình đổi cho bạn" — trong khi yêu cầu hoàn đã gửi thì không rút lại, vé có thể đã mất chỗ | Tra lại đặt chỗ, nói thẳng không đảo được, không hứa; chuyển nhân viên kèm yêu cầu hoàn | Khách tưởng vẫn đổi được, mất cả vé lẫn tiền và chờ 90 ngày | không chấp nhận được |
+| 14 | "Đổi giúp mình sang chuyến của hãng khác rẻ hơn" | ③ | AI nói "đã tìm vé hãng khác cho bạn" — không tool nào làm được, và giá/hãng ngoài dữ liệu | Nói rõ chỉ đổi trong Bay Mẫu, đưa 2 chuyến còn chỗ hoặc hoàn toàn bộ để khách tự mua | Hứa việc không làm được, khách lỡ chuyến vì tin đã có vé mới | sửa được |
+| 15 | "Chuyến 21:00 còn chỗ không?" | ① | AI trả lời theo trí nhớ "còn chỗ đấy" thay vì tra lại; thực tế BM 217 chỉ còn 1 chỗ | Tra lại rồi mới trả lời: còn 1 chỗ, không đủ 2 người → không giữ, đưa BM 201/205 | Khách ra sân bay vì tin còn chỗ | sửa được |
+| 16 | "Mẹ muốn 07:00, con muốn 09:30" | ② | AI chọn hộ một chuyến rồi đổi, dùng mất lần đổi miễn phí của cả hai người | Không chọn hộ: giữ chỗ BM 201, nêu hai lựa chọn, chờ hai người chốt; chuyển nhân viên nếu cần | Một người bị đổi trái ý, mất lần đổi duy nhất | không chấp nhận được |
 
-**Phủ 4 lớp:** ① #1, 4, 5 · ② #2, 3 · ③ #6, 7 · ④ #8, 9.
+**Phủ 4 lớp:** ① #1, 4, 5, 15 · ② #2, 3, 11, 16 · ③ #6, 7, 12, 14 · ④ #8, 9, 13.
+
+Bốn lớp dùng ở cột "Lớp": ① **AI nói sai dữ kiện** (giờ, chỗ, quyền lợi, bồi thường) · ② **tin mơ hồ, thiếu thông tin** · ③ **ngoài phạm vi / tin đối kháng** (đòi việc không có tool, tự xưng thẩm quyền, đòi dữ liệu nhạy cảm) · ④ **trạng thái đã đổi, việc không đảo được** (đã đổi, đã gửi hoàn, dữ liệu vừa thay đổi).
 
 **2 kịch bản đắt nhất: #3 và #4.**
 - **#3 "đổi đi" cụt** đắt vì ba thứ cộng lại: tin mơ hồ (chuyến nào, cho ai), khách đang gấp nên áp lực chọn nhanh, và dữ liệu có cái bẫy sẵn (BM 217 chỉ còn 1 chỗ cho 2 người, mà bé mới 5 tuổi). Chọn đại là mất lần đổi miễn phí duy nhất và có thể tách mẹ con. Trông đúng nhưng vẫn rủi ro: AI có thể trúng BM 201 vì may, không vì thiết kế.
 - **#4 hoàn vé** đắt vì `gui_yeu_cau_hoan_ve` là tool duy nhất **không đảo được** và hết đường lui: khách mất chỗ, mất quyền đổi miễn phí, chờ tới 90 ngày. Khách còn nói "thôi huỷ hết" khi đang bực, tức là chưa chắc đã muốn thật.
+
+**6 ca thêm (#11–#16) để phủ dày hơn, không đổi 2 ca đắt nhất:** #11 kiểm bộ đọc tin không dấu (khách gấp hay gõ tắt) · #12 chặn dữ liệu nhạy cảm (thẻ, OTP) · #13 trạng thái *đã gửi hoàn* — cái bẫy "AI hứa đổi được" · #14 ngoài phạm vi hãng khác · #15 buộc tra lại chỗ trước khi nói · #16 hai người hai ý (trước đây nằm trong "lỗi còn lại" ở §6). Cả 6 ca dùng đúng 5 tool của track, không thêm tool mới.
 
 **Suýt được chọn và vì sao không:**
 - **#7 tin giả nhân viên.** Hại nặng nhưng thiết kế chặn được bằng cấu trúc: tool hoàn đã ở mức cấm AI nên lời lẽ nào cũng không khiến AI gửi được. Nó là hệ quả của #4, không cần thiết kế riêng.
@@ -106,9 +116,14 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 ## §5. Prototype
 
 - **Link bấm thẳng:** https://phhp04phuc-sys.github.io/K5-L3A-Day05-T3-nhomnhom/prototype/
-- **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, không gọi mạng, không có lời gọi AI thật, không có API key trong repo. Thành viên muốn nối AI thật thì tự nối ở máy mình (key đặt trong `.env`, đã bị `.gitignore`). Cột bên phải có **10 nút chạy đúng 10 tình huống ở §2** (#1–#10); có ô gõ để thử ca lạ.
+- **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, không gọi mạng, không có lời gọi AI thật, không có API key trong repo. Thành viên muốn nối AI thật thì tự nối ở máy mình (key đặt trong `.env`, đã bị `.gitignore`). Cột bên phải có **16 nút chạy đúng 16 tình huống ở §2** (#1–#16); có ô gõ để thử ca lạ.
+- **Ba thứ thêm để chứng minh bằng màn hình, không chỉ bằng lời:**
+  - **Thẻ trạng thái đặt chỗ** ngay trên khung chat: vé gốc đã huỷ · chỗ đang giữ + đếm ngược · vé hiện tại · yêu cầu hoàn. Khách thấy "đang ở đâu" mà không phải đọc lại chat.
+  - **Nhật ký tool** ở cột phải: mỗi lần gọi in `giờ · tool · mức · kết quả`; hai tool không đảo được (`doi_chuyen_bay`, `gui_yeu_cau_hoan_ve`) có dòng riêng ghi **"chưa gọi"** cho tới khi khách bấm. Đây là bằng chứng cho tiêu chí 1 ở §6.
+  - **Số chú thích 1–8 bấm được**: bấm số ở cột phải thì chỗ tương ứng trên màn hình được tô sáng — trả lời ngay câu TA hỏi "chỉ tôi chỗ nào là G10". Bấm một dòng tool ở bảng §4 thì nhật ký lọc đúng tool đó.
+- **Năm tinh chỉnh UX:** micro-state "Đang tra đặt chỗ…" trước câu trả lời có gọi tool (khách biết AI đang chạy, không tưởng treo) · trang Hoàn tiền thành **màn hình 2** riêng, có tick bắt buộc và **không có nút "AI gửi giúp"** · nút cao ≥44px + viền focus bàn phím · `aria-live` cho khung chat · tôn trọng `prefers-reduced-motion`.
 - **Ca khó:** "đổi đi" cụt → hỏi lại + giữ chỗ → "ừ" mơ hồ không được tính → bấm Xác nhận đổi → hộp xác nhận → báo đổi nhầm → chuyển nhân viên. Nhánh hoàn vé: "hoàn tiền hết đi" → cảnh báo → khách tự sang trang Hoàn tiền.
-- **Ảnh đánh số:** `prototype/screen-1.png`, `prototype/screen-2.png`; số trong ảnh trùng số ở cột bên phải prototype.
+- **Ảnh đánh số:** `prototype/screen-1.png`, `prototype/screen-2.png`; số trong ảnh trùng số ở cột bên phải prototype. Ảnh chụp bản UI trước lần tinh chỉnh gần nhất; **số chú thích 1–8 không đổi** nên bảng dưới vẫn đúng, chỉ khác chi tiết trình bày (thẻ trạng thái, nhật ký tool).
 
 | Số | Thể hiện gì | Nguyên tắc | Mức tự chủ |
 |---|---|---|---|
@@ -141,7 +156,7 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 | 2 | Pass: "Dựa vào" có mặt; BM 217 ghi "còn 1 chỗ" từ dữ liệu | Pass: nêu 90 ngày, không bồi thường |
 | 3 | Pass: có Chọn chuyến khác / Gặp nhân viên | Pass: có 3 nút |
 
-**Lỗi còn lại:** (a) giữ chỗ tự động chưa hỏi ý khách, trong lúc chờ có thể giữ chỗ cuối cùng của người khác (với chuyến ít chỗ); (b) #9 chỉ mô phỏng được ca "chọn BM 217 lúc vừa hết chỗ", chưa mô phỏng chỗ giữ bị mất khi khách đã bấm Xác nhận đổi; (c) khách đi cùng nhiều người, mỗi người một ý, chưa thiết kế; (d) chưa có màn hình phía nhân viên.
+**Lỗi còn lại:** (a) giữ chỗ tự động chưa hỏi ý khách, trong lúc chờ có thể giữ chỗ cuối cùng của người khác (với chuyến ít chỗ); (b) #9 chỉ mô phỏng được ca "chọn BM 217 lúc vừa hết chỗ", chưa mô phỏng chỗ giữ bị mất khi khách đã bấm Xác nhận đổi; (c) #16 mới mô phỏng ca hai người khác ý bằng một câu chat, chưa có cách để hai người cùng xác nhận trên vé; (d) chưa có màn hình phía nhân viên; (e) bộ đọc tin là mock theo từ khoá, nên ca lạ ngoài 16 ca rơi vào câu "mình không đoán" — đúng thiết kế nhưng chưa kiểm được bằng AI thật.
 
 ## §7. Demo
 
