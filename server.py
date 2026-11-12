@@ -48,6 +48,23 @@ Chọn DUY NHẤT một giá trị cho "tool":
 Trả về DUY NHẤT JSON: {"tool":"...","do_chac":"thap|vua|cao","ly_do":"một câu trỏ về dữ liệu","cau_noi":"câu nói với khách, tiếng Việt có dấu, tối đa 2 câu, không hứa việc không làm được"}"""
 
 
+# Bảng giá USD / 1M token (api-docs.deepseek.com, kiểm 12/11/2026): (cache hit, cache miss, output) theo giờ thấp điểm / cao điểm.
+PRICE = {"deepseek-flash": {"off": (0.003, 0.15, 0.6), "peak": (0.006, 0.30, 1.2)},
+         "deepseek-v4-pro": {"off": (0.022, 0.66, 1.98), "peak": (0.044, 1.32, 3.96)}}
+
+
+def is_peak(t=None):
+    """Cao điểm: 01–04 và 06–10 UTC, thứ 2–6 (chưa trừ ngày lễ Trung Quốc, nên là ước tính cận trên)."""
+    t = time.gmtime(t)
+    return t.tm_wday < 5 and (1 <= t.tm_hour < 4 or 6 <= t.tm_hour < 10)
+
+
+def cost_usd(model, u):
+    p = PRICE.get(model, PRICE["deepseek-flash"])["peak" if is_peak() else "off"]
+    hit = u.get("cache_hit", 0)
+    return round(hit * p[0] / 1e6 + (u.get("in", 0) - hit) * p[1] / 1e6 + u.get("out", 0) * p[2] / 1e6, 8)
+
+
 def ds_call(text, state):
     body = json.dumps({
         "model": MODEL, "max_tokens": 400, "temperature": 0, "thinking": {"type": "disabled"},
@@ -61,6 +78,10 @@ def ds_call(text, state):
     if o.get("tool") not in TOOLS:
         o["tool"] = "hoi_lai"
     o["model"] = j.get("model", MODEL)
+    u = j.get("usage") or {}
+    o["usage"] = {"in": u.get("prompt_tokens", 0), "out": u.get("completion_tokens", 0),
+                  "cache_hit": u.get("prompt_cache_hit_tokens", 0), "total": u.get("total_tokens", 0)}
+    o["usage"]["usd"] = cost_usd(o["model"], o["usage"])
     return o
 
 
@@ -71,6 +92,23 @@ def append_log(entry):
         data = []
     data.append(entry)
     json.dump(data, open(LOGFILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
+
+def usage_total():
+    """Cộng token của mọi lượt gọi đã ghi trong ai-log-demo.json (các lượt cũ chưa đo token thì không có)."""
+    try:
+        data = json.load(open(LOGFILE, encoding="utf-8"))
+    except (OSError, ValueError):
+        data = []
+    t = {"calls": len(data), "measured": 0, "in": 0, "out": 0, "cache_hit": 0, "total": 0, "usd": 0.0}
+    for e in data:
+        u = (e.get("output") or {}).get("usage")
+        if u:
+            t["measured"] += 1
+            for k in ("in", "out", "cache_hit", "total", "usd"):
+                t[k] += u.get(k, 0)
+    t["usd"] = round(t["usd"], 6)
+    return t
 
 
 class H(SimpleHTTPRequestHandler):
@@ -95,6 +133,8 @@ class H(SimpleHTTPRequestHandler):
         self.wfile.write(b)
 
     def do_GET(self):
+        if self.path == "/api/usage":
+            return self._json(200, usage_total()) if self._ok_host() else self._json(403, {})
         if self.path == "/api/ping":
             return self._json(200, {"ai": bool(KEY), "model": MODEL if KEY else None}) if self._ok_host() else self._json(403, {})
         if self.path.split("?")[0] in ("/.env", "/server.py") or "/.git" in self.path or self.path.startswith("/.env"):

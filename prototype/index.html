@@ -261,7 +261,8 @@ function goRefund(){
   ai('Bạn đã sang trang <b>Hoàn tiền</b> để tự gửi yêu cầu. Trợ lý <b>không gửi thay</b> và chưa gửi gì. Yêu cầu gửi rồi thì <b>không huỷ được</b>. Trong lúc bạn xem, chỗ giữ (nếu có) vẫn còn đếm ngược.');
   render();
 }
-const AI={on:false,model:''};
+const AI={on:false,model:'',tok:0,calls:0,usd:0};
+function aiStat(){if(!AI.on)return;$('#aistat').innerHTML='<b>AI thật: BẬT</b> ('+esc(AI.model)+' qua máy chủ local). AI chỉ chọn tool, mức tự chủ vẫn chặn việc không đảo được.'+(AI.calls?'<br>Phiên này: <b>'+AI.calls+'</b> lượt gọi · <b>'+AI.tok+'</b> token · ≈ <b>$'+AI.usd.toFixed(5)+'</b>':'')}
 function stateStr(){return S.changed?('đã đổi sang '+S.changed+', đã dùng lần đổi miễn phí'):S.hold?('đang tạm giữ '+S.hold+' (chưa đổi vé)'):'chưa giữ chỗ, chưa đổi vé'}
 const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const AILV={tra_cuu_dat_cho:['p-auto','tự làm'],giu_cho_chuyen_moi:['p-auto','tự làm (giữ chỗ, chưa đổi)'],doi_chuyen_bay:['p-ask','cần khách bấm → chỉ giữ chỗ và hỏi'],gui_yeu_cau_hoan_ve:['p-no','cấm AI → khách tự gửi'],chuyen_nhan_vien:['p-auto','tự làm'],tra_loi_thong_tin:['p-auto','chỉ trả lời từ dữ liệu'],hoi_lai:['p-auto','hỏi lại, không gọi tool'],tu_choi:['p-no','từ chối']};
@@ -276,6 +277,7 @@ async function realRoute(t){
   try{
     const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:t,state:stateStr()})});
     const o=await r.json();if(!r.ok)throw new Error(o.error||r.status);
+    AI.calls++;AI.tok+=(o.usage&&o.usage.total)||0;AI.usd+=(o.usage&&o.usage.usd)||0;aiStat();
     const wait=Math.max(0,500-(Date.now()-t0));
     setTimeout(()=>{stopTyping();INT=true;try{applyAI(t,o)}finally{INT=false}render()},wait);
   }catch(e){
