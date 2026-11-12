@@ -4,7 +4,7 @@
 
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
-| Phan Hoàng Phúc | 2A202603455 | (điền) |
+| Phan Hoàng Phúc | 2A202603455 | Soạn spec §1–§6, dựng prototype HTML (có dùng trợ lý AI Claude để viết nháp, đã đọc và chịu trách nhiệm phần mình) |
 | (điền) | (điền) | (điền) |
 | (điền) | (điền) | (điền) |
 
