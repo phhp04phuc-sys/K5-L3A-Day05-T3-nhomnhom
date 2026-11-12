@@ -2,3 +2,5 @@
 .env.*
 *.key
 ai-log.json
+.claude-flow/
+.swarm/

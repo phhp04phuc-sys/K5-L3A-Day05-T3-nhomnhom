@@ -106,7 +106,7 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 ## §5. Prototype
 
 - **Link bấm thẳng:** https://phhp04phuc-sys.github.io/K5-L3A-Day05-T3-nhomnhom/prototype/
-- **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, mặc định không gọi mạng. **Tuỳ chọn có AI thật (DeepSeek `deepseek-chat`)**: tick "AI thật" và dán API key vào ô trên trang (key chỉ nằm trong bộ nhớ trang, không lưu, không commit); chỉ gửi dữ liệu dựng của đặt chỗ TRV-7Q2K. AI chọn tool, nhưng mức tự chủ vẫn chặn: `doi_chuyen_bay` chỉ giữ chỗ và hỏi, `gui_yeu_cau_hoan_ve` chỉ dẫn khách tự gửi. Nút "Tải log" xuất `ai-log.json` làm bằng chứng bonus (chưa commit vì chưa chạy thật). Có ô gõ để thử ca lạ (chuyến mấy giờ, ừ, hoàn, bồi thường, đổi nhầm, giả nhân viên, trẻ bay một mình).
+- **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, không gọi mạng, không có lời gọi AI thật, không có API key trong repo. Thành viên muốn nối AI thật thì tự nối ở máy mình (key đặt trong `.env`, đã bị `.gitignore`). Cột bên phải có **10 nút chạy đúng 10 tình huống ở §2** (#1–#10); có ô gõ để thử ca lạ.
 - **Ca khó:** "đổi đi" cụt → hỏi lại + giữ chỗ → "ừ" mơ hồ không được tính → bấm Xác nhận đổi → hộp xác nhận → báo đổi nhầm → chuyển nhân viên. Nhánh hoàn vé: "hoàn tiền hết đi" → cảnh báo → khách tự sang trang Hoàn tiền.
 - **Ảnh đánh số:** `prototype/screen-1.png`, `prototype/screen-2.png`; số trong ảnh trùng số ở cột bên phải prototype.
 
@@ -141,7 +141,7 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 | 2 | Pass: "Dựa vào" có mặt; BM 217 ghi "còn 1 chỗ" từ dữ liệu | Pass: nêu 90 ngày, không bồi thường |
 | 3 | Pass: có Chọn chuyến khác / Gặp nhân viên | Pass: có 3 nút |
 
-**Lỗi còn lại:** (a) giữ chỗ tự động chưa hỏi ý khách, trong lúc chờ có thể giữ chỗ cuối cùng của người khác (với chuyến ít chỗ); (b) chưa xử lý khách bấm Xác nhận đổi nhưng chuyến vừa hết chỗ giữa chừng (#9) trên màn hình; (c) khách đi cùng nhiều người, mỗi người một ý, chưa thiết kế; (d) chưa có màn hình phía nhân viên.
+**Lỗi còn lại:** (a) giữ chỗ tự động chưa hỏi ý khách, trong lúc chờ có thể giữ chỗ cuối cùng của người khác (với chuyến ít chỗ); (b) #9 chỉ mô phỏng được ca "chọn BM 217 lúc vừa hết chỗ", chưa mô phỏng chỗ giữ bị mất khi khách đã bấm Xác nhận đổi; (c) khách đi cùng nhiều người, mỗi người một ý, chưa thiết kế; (d) chưa có màn hình phía nhân viên.
 
 ## §7. Demo
 
