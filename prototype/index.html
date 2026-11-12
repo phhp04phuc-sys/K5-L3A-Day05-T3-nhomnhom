@@ -21,7 +21,7 @@ main{display:grid;grid-template-columns:430px 1fr;gap:26px;padding:22px 30px 40p
 .status .row{display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed #ece8de}
 .status .row:last-child{border-bottom:0}
 .status .k{color:var(--mut);flex:none;width:88px}
-.chat{display:flex;flex-direction:column;gap:11px;padding:8px 4px;min-height:380px;max-height:520px;overflow:auto}
+.chat{display:flex;flex-direction:column;gap:11px;padding:8px 4px;min-height:380px;max-height:max(560px,calc(100vh - 380px));overflow:auto}
 .me{align-self:flex-end;background:linear-gradient(180deg,#2a5f92,#1f4d7a);color:#fff;padding:10px 13px;border-radius:16px 16px 4px 16px;max-width:84%;box-shadow:0 2px 8px rgba(31,77,122,.22);animation:pop .18s ease-out}
 .ai{align-self:flex-start;background:#f4f2ec;padding:11px 13px;border-radius:16px 16px 16px 4px;max-width:94%;border:1px solid #ebe7dd;animation:pop .18s ease-out}
 @keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -94,7 +94,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
 </header>
 <main id="root">
 <div class="phone">
-  <div class="bar" data-n="1"><span><span class="n">1</span><b>Trợ lý đặt chỗ (AI)</b> · Đặt chỗ của tôi · TRV-7Q2K</span><span id="clock">15:00</span></div>
+  <div class="bar"><span><span class="n">1</span><b>Trợ lý đặt chỗ (AI)</b> · Đặt chỗ của tôi · TRV-7Q2K</span><span id="clock">15:00</span></div>
   <div class="trip">BM 213 · Hà Nội → TP.HCM · 12/11 19:00 · <b>ĐÃ HUỶ</b> do thời tiết (bão). Hành khách: Nguyễn Minh An · bé Nguyễn Gia Bình (5 tuổi)</div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="chat" id="chat" role="log" aria-live="polite"></div>
@@ -122,14 +122,18 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
   <section>
     <h2>Chú thích: nguyên tắc nào nằm ở đâu</h2>
     <ul class="ann">
-      <li class="click" data-go="1"><span class="n">1</span> <b>G1</b> · nhãn "Trợ lý (AI)" ở đầu màn hình, nói rõ đang làm việc với AI.</li>
+      <li class="click" data-go="1"><span class="n">1</span> <b>G1 + PAIR Mental Models</b> · câu chào đầu nói rõ AI làm được gì (tra, giữ chỗ, chuyển nhân viên) và không làm gì (không tự đổi, không tự gửi hoàn); nhãn "Trợ lý (AI)" ở đầu màn hình. <b>G3</b>: trợ lý tự mở lời đúng lúc chuyến vừa bị huỷ.</li>
       <li class="click" data-go="2"><span class="n">2</span> <b>G2</b> · chip độ chắc ở mỗi câu trả lời ("Mình chưa chắc" / "Chắc").</li>
       <li class="click" data-go="3"><span class="n">3</span> <b>G11</b> · dòng "Dựa vào" nêu đặt chỗ, tin báo huỷ, chính sách hãng.</li>
       <li class="click" data-go="4"><span class="n">4</span> <b>G10</b> · AI hỏi lại một câu thay vì đoán chuyến, hành khách.</li>
-      <li class="click" data-go="5"><span class="n">5</span> <b>G9</b> · đếm ngược giữ chỗ 20 phút và nút "Nhả chỗ".</li>
+      <li class="click" data-go="5"><span class="n">5</span> <b>G8</b> · bỏ qua dễ dàng: việc AI tự làm (giữ chỗ) có đếm ngược 20 phút, tự nhả, và nút "Nhả chỗ".</li>
       <li class="click" data-go="6"><span class="n">6</span> <b>PAIR Errors + Graceful Failure</b> · nút "Gặp nhân viên" luôn có, kèm tóm tắt ca.</li>
-      <li class="click" data-go="7"><span class="n">7</span> <b>Mức cần duyệt</b> · hộp xác nhận đổi vé nêu rõ chuyến, người, hậu quả.</li>
-      <li class="click" data-go="8"><span class="n">8</span> <b>Mức cấm</b> · yêu cầu hoàn: không có nút "AI gửi giúp", khách tự sang trang Hoàn tiền.</li>
+      <li class="click" data-go="7"><span class="n">7</span> <b>G16 + PAIR Feedback + Control</b> · hộp xác nhận đổi vé nêu rõ chuyến, người và hậu quả ("dùng lần đổi miễn phí duy nhất"); chỉ nút này mới đổi vé, chat "ừ" không tính <i>(mức cần duyệt)</i>.</li>
+      <li class="click" data-go="8"><span class="n">8</span> <b>G16 + PAIR Errors + Graceful Failure</b> · hoàn vé: phải tick "không rút lại được" mới đi tiếp; không có nút "AI gửi giúp", khách tự sang trang Hoàn tiền <i>(mức cấm)</i>.</li>
+      <li class="click" data-go="9"><span class="n">9</span> <b>PAIR Errors · lỗi hệ thống</b> · tra lại chỗ trống ngay trước khi giữ; dữ liệu cũ thì nhận lỗi về phía mình, không bắt khách nhắn lại, đưa chuyến thay.</li>
+      <li class="click" data-go="10"><span class="n">10</span> <b>G12</b> · nhớ tương tác gần đây: chuyển nhân viên kèm đặt chỗ, chỗ đang giữ, nội dung chat ("bạn không phải kể lại"); "ừ" được hiểu theo chỗ đang giữ.</li>
+      <li class="click" data-go="11"><span class="n">11</span> <b>G4</b> · thông tin đúng ngữ cảnh: chuyến được lọc theo 2 hành khách, BM 217 mờ kèm lý do "không đủ cho 2 người".</li>
+      <li class="click" data-go="12"><span class="n">12</span> <b>G9</b> · sửa dễ dàng: "Chọn chuyến khác" để sửa chuyến AI tạm giữ; "Mình bị đổi nhầm" ngay sau khi đổi.</li>
     </ul>
     <p class="mut" style="font-size:12.5px;margin:8px 0 0">Bấm một số để tô sáng đúng chỗ trên màn hình (dùng khi TA hỏi "chỗ nào là G10?").</p>
   </section>
@@ -171,12 +175,13 @@ const FL=[
  {f:'BM 217',t:'12/11 21:00',s:'còn 1 chỗ — không đủ cho 2 người',ok:false}
 ];
 const LV={'p-auto':'tự làm','p-ask':'cần khách bấm','p-no':'cấm AI'};
-const S={hold:null,sec:0,tmr:null,changed:null,refund:false,staff:false};
+const S={hold:null,sec:0,tmr:null,changed:null,refund:false,staff:false,sold217:false};
 let msgs=[],clock=15*60,LOG=[];
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');
 const now=()=>String(Math.floor(clock/60)).padStart(2,'0')+':'+String(clock%60).padStart(2,'0');
 const B=inner=>`<div class="btns">${inner}</div>`;
 const EV=`<div class="ev" data-n="3"><span class="n">3</span>Dựa vào: đặt chỗ TRV-7Q2K · tin báo huỷ 14:42 · chính sách Bay Mẫu: chuyến huỷ được đổi miễn phí <b>một lần</b> trong 48 giờ, hoặc hoàn toàn bộ.</div>`;
+const EV9=`<div class="ev" data-n="3"><span class="n">3</span>Dựa vào: tra lại chỗ trống BM 217 lúc 15:03 (0 chỗ) · đặt chỗ TRV-7Q2K: 2 hành khách.</div>`;
 const lo=t=>`<span class="conf lo" data-n="2"><span class="n">2</span>${t}</span>`;
 const hi=t=>`<span class="conf hi" data-n="2"><span class="n">2</span>${t}</span>`;
 const STAFFBTN=`<button class="btn out" data-n="6" onclick="toStaff()"><span class="n">6</span>Gặp nhân viên</button>`;
@@ -215,7 +220,7 @@ function render(){
 }
 function tick(){const t=document.querySelectorAll('.timer');const m=String(Math.floor(S.sec/60)).padStart(2,'0'),s=String(S.sec%60).padStart(2,'0');t.forEach(e=>e.textContent=S.hold?(m+':'+s):'--:--')}
 function holdBox(f){return `<div class="hold" data-n="5"><span class="n">5</span>Đang tạm giữ <b>${f}</b> cho 2 người, còn <span class="timer">20:00</span>. Chưa đổi vé.${B('<button class="btn out" onclick="release()">Nhả chỗ</button>')}</div>`}
-function confirmBtns(f){return B(`<button class="btn pri" onclick="askChange('${f}')">Xác nhận đổi</button><button class="btn" onclick="more()">Chọn chuyến khác</button>${STAFFBTN}`)}
+function confirmBtns(f){return B(`<button class="btn pri" onclick="askChange('${f}')">Xác nhận đổi</button><button class="btn" onclick="more()"><span class="n">12</span>Chọn chuyến khác</button>${STAFFBTN}`)}
 function startHold(f){
   clearInterval(S.tmr);S.hold=f;S.sec=1200;
   log('giu_cho_chuyen_moi','p-auto',`Giữ ${f} cho 2 người — tự nhả sau 20 phút, chưa đổi vé`);
@@ -224,7 +229,7 @@ function startHold(f){
 }
 function reHold(){if(S.changed)return;startHold('BM 201');ai(holdBox('BM 201'));render()}
 function release(){if(!S.hold)return;clearInterval(S.tmr);const f=S.hold;S.hold=null;S.sec=0;log('giu_cho_chuyen_moi','p-auto',`Khách bấm "Nhả chỗ" — đã nhả ${f}, chưa đổi gì`);ai(`Đã nhả chỗ ${f}. Không đổi gì, lần đổi miễn phí vẫn còn.`);render()}
-function opts(){return FL.map(o=>`<div class="opt ${o.ok?'':'off'} ${o.f===S.hold?'sel':''}"><span><b>${o.f}</b> · ${o.t}<br><small>${o.s}</small></span>${o.ok?`<button class="btn" onclick="pick('${o.f}')">Chọn</button>`:''}</div>`).join('')}
+function opts(){return FL.map(o=>`<div class="opt ${o.ok?'':'off'} ${o.f===S.hold?'sel':''}"><span><b>${o.f}</b> · ${o.t}<br><small>${o.ok?'':'<span class="n">11</span>'}${o.s}</small></span>${o.ok?`<button class="btn" onclick="pick('${o.f}')">Chọn</button>`:''}</div>`).join('')}
 function pick(f){if(S.changed)return;startHold(f);ai(`Mình giữ chỗ <b>${f}</b> cho cả 2 người trong 20 phút. Bạn xác nhận đổi sang chuyến này chứ?`+holdBox(f)+confirmBtns(f));render()}
 function more(){ai('Các chuyến còn chỗ:'+opts()+EV+B(STAFFBTN));render()}
 function askChange(f){if(S.changed)return;$('#m1f').textContent=f;$('#m1t').textContent=(FL.find(o=>o.f===f)||{t:'13/11 07:00'}).t;$('#m1').classList.add('show')}
@@ -272,27 +277,37 @@ function route(t){
     log('tra_cuu_dat_cho','p-auto','Đọc TRV-7Q2K: BM 213 đã huỷ, 3 chuyến thay thế còn chỗ');return}
   if(/^(u|um|ok|oke|okay|duoc|dong y|o|vang|d)\b/.test(n.trim())){
     if(S.changed){ai('Vé đã được đổi rồi. Bạn cần gì thêm?');return}
-    if(S.hold){ai(`${lo('Mình chưa chắc')} Mình chưa đổi gì. Tin nhắn "ừ" chưa đủ rõ là đồng ý đổi sang ${S.hold} cho cả 2 người hay chỉ đồng ý giữ chỗ. Đổi vé dùng lần đổi miễn phí duy nhất nên mình chỉ làm khi bạn bấm nút bên dưới.`+holdBox(S.hold)+confirmBtns(S.hold));return}
+    if(S.hold){ai(`${lo('Mình chưa chắc')} <span class="n">10</span>Mình chưa đổi gì. Tin nhắn "ừ" chưa đủ rõ là đồng ý đổi sang ${S.hold} cho cả 2 người hay chỉ đồng ý giữ chỗ. Đổi vé dùng lần đổi miễn phí duy nhất nên mình chỉ làm khi bạn bấm nút bên dưới.`+holdBox(S.hold)+confirmBtns(S.hold));return}
     ai(`${lo('Mình chưa chắc')} Bạn đồng ý với việc gì ạ? Hiện chưa có gì để xác nhận.`+B(`<button class="btn pri" onclick="send('đổi đi')">Đổi chuyến</button>${STAFFBTN}`));return}
-  if(/217/.test(n)&&!S.changed){
-    log('tra_cuu_dat_cho','p-auto','Tra lại trước khi giữ: BM 217 vừa hết chỗ (0 chỗ)');
-    ai(`${hi('Chắc')} Mình vừa <b>tra lại</b> trước khi giữ: BM 217 · 12/11 21:00 <b>vừa hết chỗ</b> (dữ liệu lúc trước còn 1 chỗ nay là 0). Mình chưa giữ gì, bạn chưa mất gì. Hai chuyến còn đủ chỗ cho 2 người:`+opts().replace('còn 1 chỗ — không đủ cho 2 người','vừa hết chỗ')+EV+B(STAFFBTN));return}
+  if(/con cho|het cho|con khong|con trong/.test(n)){
+    // #15 · khách hỏi chỗ còn trống: phải tra lại rồi mới trả lời, không nói theo trí nhớ
+    say(`${hi('Chắc')} Mình vừa <b>tra lại</b> chỗ: BM 217 · 12/11 21:00 ${S.sold217?'<b>đã hết chỗ</b> (tra lại lúc 15:03)':'<b>chỉ còn 1 chỗ</b> — không đủ cho An và bé Bình'} nên mình không giữ. Hai chuyến đủ chỗ cho 2 người: BM 201 (07:00, còn 9) và BM 205 (09:30, còn 4). Bạn muốn chuyến nào?`+opts()+EV+B(STAFFBTN),'Đang tra lại chỗ trống…');
+    log('tra_cuu_dat_cho','p-auto','Tra lại chỗ trống trước khi trả lời khách');return}
+  if(/217|21h|21:00|21 gio|9h toi|9 gio toi|toi nay/.test(n)&&!S.changed){
+    // #9 · lỗi HỆ THỐNG: danh sách lúc 15:00 ghi còn 1 chỗ, tra lại ngay trước khi giữ thì đã hết
+    S.sold217=true;FL[2].s='hết chỗ (tra lại lúc 15:03)';
+    log('tra_cuu_dat_cho','p-auto','Tra lại trước khi giữ: BM 217 đã hết chỗ (0 chỗ)');
+    ai(`${lo('Lỗi phía mình: số chỗ lúc nãy đã cũ')}<span class="n">9</span> Danh sách mình đưa lúc 15:00 ghi BM 217 còn 1 chỗ, nhưng mình <b>tra lại ngay trước khi giữ</b> thì BM 217 · 12/11 21:00 <b>đã hết chỗ</b>. Lỗi nằm ở dữ liệu phía mình, không phải do bạn, và bạn không cần nhắn lại. Mình <b>chưa giữ, chưa đổi gì</b>; lần đổi miễn phí vẫn còn. Hai chuyến còn đủ chỗ cho cả bạn và bé Bình:`+opts()+EV9+B(STAFFBTN));return}
   if(/me muon|moi nguoi mot y|hai y kien|y kien khac|vo muon|chong muon/.test(n)){
     startHold('BM 201');
     ai(`${lo('Mình chưa chắc: hai người khác ý')} <span class="n">4</span><b>Bạn muốn 07:00 còn người đi cùng muốn 09:30 — hai người chốt chuyến nào?</b> Mình không chọn hộ, vì chỉ có <b>một lần đổi miễn phí</b>. Trong lúc chờ, mình tạm giữ chuyến sớm nhất đủ chỗ cho cả hai: BM 201 (07:00). `+holdBox('BM 201')+opts()+EV+confirmBtns('BM 201'));return}
-  if(/con cho|het cho|con khong|con trong/.test(n)){
-    say(`${hi('Chắc')} Mình vừa <b>tra lại</b> chỗ: BM 217 · 12/11 21:00 <b>chỉ còn 1 chỗ</b> — không đủ cho An và bé Bình nên mình không giữ. Hai chuyến đủ chỗ cho 2 người: BM 201 (07:00, còn 9) và BM 205 (09:30, còn 4). Bạn muốn chuyến nào?`+opts()+EV+B(STAFFBTN),'Đang tra lại chỗ trống…');
-    log('tra_cuu_dat_cho','p-auto','Tra lại chỗ trống: BM 217 còn 1, BM 201 còn 9, BM 205 còn 4');return}
   if(/hang khac|vietjet|bamboo|vietnam airlines|vna/.test(n)){
     ai(`${lo('Mình chỉ đổi được trong hãng Bay Mẫu')} Đặt chỗ TRV-7Q2K là vé của Bay Mẫu; mình không có công cụ đổi sang hãng khác và không tự mua vé mới. Bạn được đổi miễn phí một lần trong Bay Mẫu, hoặc hoàn toàn bộ rồi tự mua vé hãng khác.`+B(`<button class="btn pri" onclick="more()">Xem chuyến còn chỗ</button>${STAFFBTN}`)+EV);return}
-  if(/7h|07:00|7 gio|07 gio|bay gio/.test(n)&&/ca hai|me con|ca 2|hai me con/.test(n)){pick('BM 201');return}
+  const fl=/bm ?201|\b0?7 ?(h|gio)\b|07:00|bay gio/.test(n)?'BM 201':/bm ?205|9 ?h ?30|09:30|9:30|9 ?(h|gio) ?ruoi/.test(n)?'BM 205':null;
+  if(!S.changed&&fl){
+    // #10 · khách đã nói rõ chuyến: không hỏi lại thừa, giữ đúng chuyến đó, chỉ cần một nút
+    const both=/ca hai|ca 2|hai me con|2 me con|me con|2 nguoi|hai nguoi/.test(n),o=FL.find(x=>x.f===fl);
+    startHold(fl);
+    ai((both?`${hi('Chắc: bạn đã nói rõ chuyến và người')} Mình giữ <b>${fl} · ${o.t}</b> cho cả An và bé Bình (${o.s}).`
+            :`${hi('Chắc về chuyến')} Mình giữ <b>${fl} · ${o.t}</b> cho cả 2 hành khách trong đặt chỗ (${o.s}). Muốn đổi riêng một người thì gặp nhân viên.`)
+      +` <b>Chưa đổi vé</b>, bấm Xác nhận đổi khi bạn sẵn sàng.`+holdBox(fl)+EV+confirmBtns(fl));return}
   if(/sang mai/.test(n)&&/doi/.test(n)){
     startHold('BM 201');
     ai(`${lo('Mình chưa chắc: sáng mai có 2 chuyến')}<span class="n">4</span><b>Bạn muốn 07:00 (BM 201) hay 09:30 (BM 205), cho cả An và bé Bình?</b> Trong lúc bạn chọn, mình tạm giữ chuyến sớm nhất, chưa đổi vé:`+opts()+holdBox('BM 201')+EV+confirmBtns('BM 201'));return}
   if(/doi/.test(n)){
     if(S.changed){ai('Vé đã đổi xong. Đổi lần nữa có thể mất phí, mình chuyển nhân viên nhé?'+B(STAFFBTN));return}
     startHold('BM 201');
-    ai(`${lo(plain?'Mình đọc được tin không dấu, nhưng vẫn thiếu chuyến và thiếu người':'Mình chưa chắc: bạn chưa nói chuyến nào, cho ai')}<span class="n">4</span><b>Bạn muốn đổi sang chuyến nào, cho cả An và bé Bình?</b> BM 217 tối nay chỉ còn 1 chỗ, không đủ cho 2 người nên mình không đề xuất. Trong lúc bạn chọn, mình tạm giữ chuyến sớm nhất đủ chỗ cho cả hai:`+opts()+holdBox('BM 201')+EV+confirmBtns('BM 201'));return}
+    ai(`${lo(plain?'Mình đọc được tin không dấu, nhưng vẫn thiếu chuyến và thiếu người':'Mình chưa chắc: bạn chưa nói chuyến nào, cho ai')}<span class="n">4</span><b>Bạn muốn đổi sang chuyến nào, cho cả An và bé Bình?</b> ${S.sold217?'BM 217 tối nay đã hết chỗ.':'BM 217 tối nay chỉ còn 1 chỗ, không đủ cho 2 người nên mình không đề xuất.'} Trong lúc bạn chọn, mình tạm giữ chuyến sớm nhất đủ chỗ cho cả hai:`+opts()+holdBox('BM 201')+EV+confirmBtns('BM 201'));return}
   ai(`${lo('Mình chưa chắc hiểu ý bạn')} Mình không đoán. Bạn muốn: đổi chuyến, hoàn vé, hay gặp nhân viên?`+B(`<button class="btn pri" onclick="send('đổi đi')">Đổi chuyến</button><button class="btn" onclick="send('hoàn tiền hết đi')">Hoàn vé</button>${STAFFBTN}`));
 }
 function flash(n){
@@ -318,8 +333,10 @@ document.addEventListener('click',e=>{
 $('#form').addEventListener('submit',e=>{e.preventDefault();const v=$('#txt').value;$('#txt').value='';send(v)});
 $('#nbox').addEventListener('change',e=>$('#root').classList.toggle('hide-n',!e.target.checked));
 log('tra_cuu_dat_cho','p-auto','Đọc TRV-7Q2K: 2 hành khách, BM 213 đã huỷ do bão, 3 chuyến thay thế còn chỗ');
-ai('Mình là trợ lý AI của Đặt chỗ của tôi. Mình thấy chuyến BM 213 của bạn đã bị huỷ do bão. Mình có thể tra đặt chỗ, giữ chỗ chuyến khác và chuyển nhân viên. Mình chỉ đổi vé khi bạn bấm xác nhận, và không tự gửi yêu cầu hoàn vé.');
+ai('<span data-n="1"><span class="n">1</span>Mình là trợ lý AI của Đặt chỗ của tôi. Mình thấy chuyến BM 213 của bạn đã bị huỷ do bão. Mình có thể tra đặt chỗ, giữ chỗ chuyến khác và chuyển nhân viên. Mình chỉ đổi vé khi bạn bấm xác nhận, và không tự gửi yêu cầu hoàn vé.</span>');
 render();
+// Mở thẳng một tình huống bằng link, ví dụ #s=đổi đi|ừ&c=BM 201 (để chụp ảnh và demo nhanh)
+(()=>{try{const h=new URLSearchParams(location.hash.slice(1));(h.get('s')||'').split('|').filter(Boolean).forEach(send);if(h.get('c'))askChange(h.get('c'));if(h.has('staff'))toStaff();if(h.get('m'))$('#'+h.get('m')).classList.add('show')}catch(e){}})();
 </script>
 </body>
 </html>
