@@ -105,7 +105,8 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 
 ## §5. Prototype
 
-- **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, **không có lời gọi AI thật**, không gửi dữ liệu đi đâu, không có API key. Có ô gõ để thử ca lạ (chuyến mấy giờ, ừ, hoàn, bồi thường, đổi nhầm, giả nhân viên, trẻ bay một mình).
+- **Link bấm thẳng:** https://phhp04phuc-sys.github.io/K5-L3A-Day05-T3-nhomnhom/prototype/
+- **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, mặc định không gọi mạng. **Tuỳ chọn có AI thật (DeepSeek `deepseek-chat`)**: tick "AI thật" và dán API key vào ô trên trang (key chỉ nằm trong bộ nhớ trang, không lưu, không commit); chỉ gửi dữ liệu dựng của đặt chỗ TRV-7Q2K. AI chọn tool, nhưng mức tự chủ vẫn chặn: `doi_chuyen_bay` chỉ giữ chỗ và hỏi, `gui_yeu_cau_hoan_ve` chỉ dẫn khách tự gửi. Nút "Tải log" xuất `ai-log.json` làm bằng chứng bonus (chưa commit vì chưa chạy thật). Có ô gõ để thử ca lạ (chuyến mấy giờ, ừ, hoàn, bồi thường, đổi nhầm, giả nhân viên, trẻ bay một mình).
 - **Ca khó:** "đổi đi" cụt → hỏi lại + giữ chỗ → "ừ" mơ hồ không được tính → bấm Xác nhận đổi → hộp xác nhận → báo đổi nhầm → chuyển nhân viên. Nhánh hoàn vé: "hoàn tiền hết đi" → cảnh báo → khách tự sang trang Hoàn tiền.
 - **Ảnh đánh số:** `prototype/screen-1.png`, `prototype/screen-2.png`; số trong ảnh trùng số ở cột bên phải prototype.
 
