@@ -5,7 +5,7 @@
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
 | Phan Hoàng Phúc | 2A202603455 | Soạn spec §1–§6, dựng prototype HTML (có dùng trợ lý AI Claude để viết nháp, đã đọc và chịu trách nhiệm phần mình) |
-| (điền) | (điền) | (điền) |
+| Khuất Duy Hiếu | 2A202603383 | Review spec và prototype theo rubric. Sửa prototype: hộp xác nhận đổi vé hiện đúng giờ chuyến đã chọn; nhận ra khi khách nói rõ chuyến (#10: 7h/9h30/BM 201/BM 205) thì giữ đúng chuyến, chip "Chắc", không hỏi lại thừa; ca #9 BM 217 vừa hết chỗ thành ví dụ lỗi hệ thống (chú thích 9); link mở thẳng tình huống `#s=`. Viết §3 "Loại lỗi thứ ba: lỗi hệ thống" (bảng so sánh 3 loại lỗi), ghi dữ liệu tự thêm ở §2, cập nhật §5 và §6. Chụp lại `screen-1` → `screen-4` (có dùng trợ lý AI Claude, đã đọc và chịu trách nhiệm phần mình) |
 | (điền) | (điền) | (điền) |
 
 ## §1. Lát cắt & phạm vi
@@ -22,6 +22,8 @@
 ## §2. Kịch bản rủi ro
 
 Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bình 5 tuổi); BM 217 21:00 còn **1** chỗ, BM 201 07:00 còn 9, BM 205 09:30 còn 4; chính sách: đổi miễn phí **một lần** trong 48 giờ hoặc hoàn toàn bộ, thời tiết **không bồi thường tiền mặt**; hoàn vé gửi rồi không huỷ được, tới 90 ngày.
+
+**Dữ liệu nhóm tự thêm (đề cho phép, ghi rõ ở đây):** giờ hãng gửi tin báo huỷ là 14:42 (dùng trong dòng "Dựa vào"); ở kịch bản #9, BM 217 hết chỗ lúc 15:03, tức là sau khi danh sách 15:00 vừa được đưa cho khách.
 
 | # | Tin người dùng | Lớp | AI có thể sai thế nào (trỏ về) | Sản phẩm tốt nên làm | Nhãn |
 |---|---|---|---|---|---|
@@ -75,6 +77,23 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
   - **PAIR Errors + Graceful Failure** → chú thích 6: nút Gặp nhân viên có ở mọi câu AI không chắc.
   - (G2 → chú thích 2: chip độ chắc; G1 → chú thích 1: nhãn "Trợ lý (AI)".)
 
+### Loại lỗi thứ ba: lỗi hệ thống (kịch bản #9, `prototype/screen-3.png`)
+
+Hai kịch bản đắt nhất ở trên là lỗi **ngữ cảnh** (#3) và lỗi **người dùng** (#4). Để thấy cách nói và cách sửa khác nhau theo loại lỗi, nhóm thiết kế thêm ca lỗi **hệ thống**: lúc 15:00 trợ lý đưa danh sách ghi BM 217 còn 1 chỗ, khách nhắn "Mình lấy BM 217 21:00 nhé", nhưng tới 15:03 thì chuyến đã hết.
+
+- **AI nói (nguyên văn):** "Danh sách mình đưa lúc 15:00 ghi BM 217 còn 1 chỗ, nhưng mình tra lại ngay trước khi giữ thì BM 217 · 12/11 21:00 đã hết chỗ. Lỗi nằm ở dữ liệu phía mình, không phải do bạn, và bạn không cần nhắn lại. Mình chưa giữ, chưa đổi gì; lần đổi miễn phí vẫn còn. Hai chuyến còn đủ chỗ cho cả bạn và bé Bình: …"
+- **Người dùng thấy:** chip vàng "Lỗi phía mình: số chỗ lúc nãy đã cũ" (chú thích 9); BM 217 bị làm mờ, ghi "hết chỗ (tra lại lúc 15:03)"; dòng "Dựa vào" ghi đúng giờ tra lại, không dùng lại dữ liệu cũ; BM 201 và BM 205 có nút Chọn; nút Gặp nhân viên.
+- **Làm gì tiếp:** chọn BM 201 hoặc BM 205 (sau đó vẫn phải bấm Xác nhận đổi), hoặc gặp nhân viên.
+- **Ai được báo:** khách thì được báo ngay. Phía vận hành nên ghi lại lần dữ liệu chỗ trống bị lệch để kiểm tra cache (mục này chưa có trên prototype).
+
+| Loại lỗi | Ca | Cách nói | Cách sửa |
+|---|---|---|---|
+| Ngữ cảnh | #3 "đổi đi" cụt | Không xin lỗi, không đổ lỗi; nêu ràng buộc (1 chỗ không đủ 2 người) rồi hỏi một câu | Giữ chỗ tự nhả + nút xác nhận |
+| Người dùng | #4 "huỷ hết, hoàn tiền" | Không trách; nêu hậu quả bằng số (90 ngày, mất chỗ) và mở lại đường đổi chuyến | Tool hoàn ở mức cấm; khách tự gửi sau khi tick ô cảnh báo |
+| Hệ thống | #9 BM 217 vừa hết chỗ | **Nhận lỗi về phía mình**, nói rõ khách không phải làm lại gì, nói giờ tra lại | Tra lại ngay trước khi giữ chỗ (không tin danh sách cũ); đưa luôn chuyến thay |
+
+Đã cân nhắc và loại: nói chung chung "Chuyến này không còn chỗ" mà không nhận dữ liệu lúc nãy sai. Loại vì khách vừa thấy "còn 1 chỗ" ba phút trước; không giải thích thì khách nghĩ trợ lý nói dối hoặc mình bấm sai, và mất niềm tin vào mọi con số khác trên màn hình.
+
 ## §4. Mức tự chủ
 
 | Tool | Mức | Ai duyệt / quá hạn | Lý do theo cost-of-error |
@@ -108,7 +127,12 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 - **Link bấm thẳng:** https://phhp04phuc-sys.github.io/K5-L3A-Day05-T3-nhomnhom/prototype/
 - **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, không gọi mạng, không có lời gọi AI thật, không có API key trong repo. Thành viên muốn nối AI thật thì tự nối ở máy mình (key đặt trong `.env`, đã bị `.gitignore`). Cột bên phải có **10 nút chạy đúng 10 tình huống ở §2** (#1–#10); có ô gõ để thử ca lạ.
 - **Ca khó:** "đổi đi" cụt → hỏi lại + giữ chỗ → "ừ" mơ hồ không được tính → bấm Xác nhận đổi → hộp xác nhận → báo đổi nhầm → chuyển nhân viên. Nhánh hoàn vé: "hoàn tiền hết đi" → cảnh báo → khách tự sang trang Hoàn tiền.
-- **Ảnh đánh số:** `prototype/screen-1.png`, `prototype/screen-2.png`; số trong ảnh trùng số ở cột bên phải prototype.
+- **Ảnh đánh số** (số trong ảnh trùng số ở cột bên phải prototype):
+  - `prototype/screen-1.png`: #3 "đổi đi" cụt, hỏi lại + giữ chỗ (chú thích 1–6).
+  - `prototype/screen-2.png`: #4 hoàn vé, hộp cảnh báo có ô tick bắt buộc (chú thích 8).
+  - `prototype/screen-3.png`: #9 lỗi hệ thống, BM 217 vừa hết chỗ (chú thích 9).
+  - `prototype/screen-4.png`: #10 khách nói rõ "9h30 sáng mai cho cả hai mẹ con" → chip "Chắc", giữ đúng BM 205, hộp xác nhận đổi (chú thích 7).
+- **Mở thẳng một tình huống bằng link** (dùng khi demo): thêm `#s=<tin nhắn>` vào cuối link, nhiều tin cách nhau bằng `|`. Ví dụ `…/prototype/#s=đổi đi|ừ`.
 
 | Số | Thể hiện gì | Nguyên tắc | Mức tự chủ |
 |---|---|---|---|
@@ -120,6 +144,7 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 | 6 | Nút Gặp nhân viên, thông báo nhân viên thấy sẵn gì | PAIR Errors + Graceful Failure | tự làm (`chuyen_nhan_vien`) |
 | 7 | Hộp xác nhận đổi vé: chuyến, người, hậu quả | G11, G9 | cần duyệt (`doi_chuyen_bay`) |
 | 8 | Hoàn vé: tick bắt buộc, không có nút "AI gửi giúp" | PAIR Graceful Failure | cấm AI (`gui_yeu_cau_hoan_ve`) |
+| 9 | Lỗi hệ thống: tra lại chỗ trống trước khi giữ, nhận lỗi về phía mình, ghi giờ tra lại | PAIR Errors, G11 | tự làm (`tra_cuu_dat_cho`, `giu_cho_chuyen_moi`) |
 
 **Quyết định về cách hiện:**
 - **Độ chắc:** chọn chip chữ ("Mình chưa chắc") thay vì phần trăm. Phần trăm giả chính xác và khách không biết 73% nghĩa là gì; chip chữ kèm lý do ("bạn chưa nói chuyến nào") cho khách biết cần làm gì.
@@ -141,7 +166,7 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 | 2 | Pass: "Dựa vào" có mặt; BM 217 ghi "còn 1 chỗ" từ dữ liệu | Pass: nêu 90 ngày, không bồi thường |
 | 3 | Pass: có Chọn chuyến khác / Gặp nhân viên | Pass: có 3 nút |
 
-**Lỗi còn lại:** (a) giữ chỗ tự động chưa hỏi ý khách, trong lúc chờ có thể giữ chỗ cuối cùng của người khác (với chuyến ít chỗ); (b) #9 chỉ mô phỏng được ca "chọn BM 217 lúc vừa hết chỗ", chưa mô phỏng chỗ giữ bị mất khi khách đã bấm Xác nhận đổi; (c) khách đi cùng nhiều người, mỗi người một ý, chưa thiết kế; (d) chưa có màn hình phía nhân viên.
+**Lỗi còn lại:** (a) giữ chỗ tự động chưa hỏi ý khách, trong lúc chờ có thể giữ chỗ cuối cùng của người khác (với chuyến ít chỗ); (b) #9 đã có trên prototype ở bước giữ chỗ (`screen-3.png`), nhưng chưa mô phỏng trường hợp chỗ giữ bị mất đúng lúc khách đã bấm Xác nhận đổi; (c) khách đi cùng nhiều người, mỗi người một ý, chưa thiết kế; (d) chưa có màn hình phía nhân viên.
 
 ## §7. Demo
 
