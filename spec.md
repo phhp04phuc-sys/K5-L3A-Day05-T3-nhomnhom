@@ -120,7 +120,11 @@ Hai kịch bản đắt nhất ở trên là lỗi **ngữ cảnh** (#3) và l�
 - **A. Tự làm** khi khách nói rõ. Cái giá: kịch bản #3 (cụt) và #2 (sáng mai có 2 chuyến) cho thấy "rõ" khó đoán; sai là mất lần đổi duy nhất (#8).
 - **B. Cần nhân viên duyệt.** Cái giá: kịch bản #10 (khách nói rõ, bình thường) phải chờ vô ích, trong lúc chờ chuyến tốt nhất hết chỗ (BM 217 chỉ 1 chỗ).
 - **C. Cần khách bấm xác nhận** (chọn). Chặn #2, #3; không bắt chờ người ở #10.
-- *Mỗi thành viên từng chọn gì: (điền khi nhóm thảo luận: ai chọn A/B/C, vì sao).* Nhóm chốt C kèm luật thêm bên dưới.
+- **Mỗi thành viên từng chọn gì:**
+  - **Phúc:** chọn **C**. Vì cái giá của A (kịch bản #8 đổi nhầm, mất lần đổi miễn phí duy nhất) lớn hơn cái giá của một nút bấm; và loại B vì kịch bản #10 (khách đã nói rõ chuyến và người) mà bắt chờ nhân viên thì BM 201/205 có thể hết chỗ trong lúc chờ, chờ người cũng là một kiểu sai.
+  - **Khuất Duy Hiếu:** *(điền)*
+  - **Thành viên còn lại:** *(điền)*
+  - **Nhóm chốt C** kèm luật thêm bên dưới.
 
 **Luật thêm / tách bước:** tách `doi_chuyen_bay` thành **"giữ chỗ + soạn đổi"** (tự làm, đảo được) và **"đổi vé"** (cần khách bấm). Nhờ đó #3 được chặn: khách gấp vẫn được giữ chỗ ngay mà không mất gì. Luật: **chỉ tính nút bấm là xác nhận, chat "ừ/ok" không tính**.
 
@@ -150,6 +154,7 @@ Hai kịch bản đắt nhất ở trên là lỗi **ngữ cảnh** (#3) và l�
   - `prototype/screen-3.png`: #9 lỗi hệ thống, BM 217 vừa hết chỗ (chú thích 9).
   - `prototype/screen-4.png`: #10 khách nói rõ "9h30 sáng mai cho cả hai mẹ con" → chip "Chắc", giữ đúng BM 205, hộp xác nhận đổi (chú thích 7).
   - `prototype/screen-5.png`: khách gõ "ừ" khi đang giữ chỗ (không tính là xác nhận), rồi chuyển nhân viên kèm tóm tắt ca (chú thích 10).
+  - `prototype/screen-6.png`: ba chấm "đang gõ" trước câu trả lời (kịch bản "đổi sang sáng mai") và dòng trạng thái "AI thật: BẬT" dưới ô chat; cột phải có nhật ký tool cho thấy `doi_chuyen_bay` và `gui_yeu_cau_hoan_ve` **chưa gọi** (chú thích 1, 5, 6).
   - *Lưu ý:* 5 ảnh chụp trước lần thêm **thẻ trạng thái đặt chỗ** và **nhật ký tool**; số chú thích không đổi nên bảng dưới vẫn đúng, chỉ khác chi tiết trình bày ở cột trái/phải.
 - **Mở thẳng một tình huống bằng link** (dùng khi demo): thêm `#s=<tin nhắn>` vào cuối link, nhiều tin cách nhau bằng `|`. Ví dụ `…/prototype/#s=đổi đi|ừ`.
 
