@@ -5,7 +5,7 @@
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
 | Phan Hoàng Phúc | 2A202603455 | Soạn spec §1–§6, dựng prototype HTML (có dùng trợ lý AI Claude để viết nháp, đã đọc và chịu trách nhiệm phần mình) |
-| Khuất Duy Hiếu | 2A202603383 | Review spec và prototype theo rubric. Sửa prototype: hộp xác nhận đổi vé hiện đúng giờ chuyến đã chọn; nhận ra khi khách nói rõ chuyến (#10: 7h/9h30/BM 201/BM 205) thì giữ đúng chuyến, chip "Chắc", không hỏi lại thừa; ca #9 BM 217 vừa hết chỗ thành ví dụ lỗi hệ thống (chú thích 9); link mở thẳng tình huống `#s=`. Viết §3 "Loại lỗi thứ ba: lỗi hệ thống" (bảng so sánh 3 loại lỗi), ghi dữ liệu tự thêm ở §2, cập nhật §5 và §6. Chụp lại `screen-1` → `screen-4` (có dùng trợ lý AI Claude, đã đọc và chịu trách nhiệm phần mình) |
+| Khuất Duy Hiếu | 2A202603383 | Review spec và prototype theo rubric. Sửa prototype: hộp xác nhận đổi vé hiện đúng giờ chuyến đã chọn; nhận ra khi khách nói rõ chuyến (#10: 7h/9h30/BM 201/BM 205) thì giữ đúng chuyến, chip "Chắc", không hỏi lại thừa; ca #9 BM 217 vừa hết chỗ thành ví dụ lỗi hệ thống (chú thích 9); link mở thẳng tình huống `#s=`. Viết §3 "Loại lỗi thứ ba: lỗi hệ thống" (bảng so sánh 3 loại lỗi), ghi dữ liệu tự thêm ở §2, cập nhật §5 và §6. Rà soát và sửa chú thích HAX/PAIR (số 1, 5, 7, 8 đổi sang G1+Mental Models, G8, G16; thêm 10 G12, 11 G4, 12 G9), cập nhật §3 và §5. Chụp lại `screen-1` → `screen-5` (có dùng trợ lý AI Claude, đã đọc và chịu trách nhiệm phần mình) |
 | (điền) | (điền) | (điền) |
 
 ## §1. Lát cắt & phạm vi
@@ -73,9 +73,12 @@ Dữ liệu dùng: BM 213 đã huỷ do bão; 2 hành khách (An 34 tuổi, Bìn
 - **Nguyên tắc HAX/PAIR (mỗi cái trỏ một chỗ trên prototype, số trong ảnh):**
   - **G10 — thu hẹp khi nghi ngờ** → chú thích 4: câu hỏi lại "đổi sang chuyến nào, cho cả An và bé Bình?" thay vì đoán.
   - **G11 — giải thích vì sao** → chú thích 3: dòng "Dựa vào" nêu đặt chỗ, tin báo huỷ, chính sách.
-  - **G9 — sửa dễ dàng** → chú thích 5: đếm ngược giữ chỗ và nút Nhả chỗ.
+  - **G16 — cho thấy hậu quả của hành động** → chú thích 7 (#3) và 8 (#4): hộp xác nhận đổi vé ghi "dùng lần đổi miễn phí duy nhất"; hộp hoàn vé bắt tick "không rút lại được" trước khi đi tiếp.
+  - **G8 — bỏ qua dễ dàng** → chú thích 5: chỗ AI tự giữ có đếm ngược, tự nhả, nút Nhả chỗ.
+  - **G9 — sửa dễ dàng** → chú thích 12: "Chọn chuyến khác" sửa chuyến AI tạm giữ; "Mình bị đổi nhầm" ngay sau khi đổi.
+  - **G12 — nhớ tương tác gần đây** → chú thích 10: "ừ" được hiểu theo chỗ đang giữ; chuyển nhân viên kèm đặt chỗ, chỗ giữ, nội dung chat ("bạn không phải kể lại").
   - **PAIR Errors + Graceful Failure** → chú thích 6: nút Gặp nhân viên có ở mọi câu AI không chắc.
-  - (G2 → chú thích 2: chip độ chắc; G1 → chú thích 1: nhãn "Trợ lý (AI)".)
+  - (G1 + PAIR Mental Models → chú thích 1: câu chào nói AI làm được gì, không làm gì; G2 → chú thích 2: chip độ chắc; G4 → chú thích 11: BM 217 mờ vì không đủ cho 2 người.)
 
 ### Loại lỗi thứ ba: lỗi hệ thống (kịch bản #9, `prototype/screen-3.png`)
 
@@ -128,23 +131,29 @@ Hai kịch bản đắt nhất ở trên là lỗi **ngữ cảnh** (#3) và l�
 - **File:** `prototype/index.html` (một file HTML, mở bằng trình duyệt). **Công cụ:** HTML/JS thuần, viết bằng Claude. **Mock:** toàn bộ; phản hồi theo kịch bản, không gọi mạng, không có lời gọi AI thật, không có API key trong repo. Thành viên muốn nối AI thật thì tự nối ở máy mình (key đặt trong `.env`, đã bị `.gitignore`). Cột bên phải có **10 nút chạy đúng 10 tình huống ở §2** (#1–#10); có ô gõ để thử ca lạ.
 - **Ca khó:** "đổi đi" cụt → hỏi lại + giữ chỗ → "ừ" mơ hồ không được tính → bấm Xác nhận đổi → hộp xác nhận → báo đổi nhầm → chuyển nhân viên. Nhánh hoàn vé: "hoàn tiền hết đi" → cảnh báo → khách tự sang trang Hoàn tiền.
 - **Ảnh đánh số** (số trong ảnh trùng số ở cột bên phải prototype):
-  - `prototype/screen-1.png`: #3 "đổi đi" cụt, hỏi lại + giữ chỗ (chú thích 1–6).
+  - `prototype/screen-1.png`: #3 "đổi đi" cụt, hỏi lại + giữ chỗ (chú thích 1–6, 11, 12).
   - `prototype/screen-2.png`: #4 hoàn vé, hộp cảnh báo có ô tick bắt buộc (chú thích 8).
   - `prototype/screen-3.png`: #9 lỗi hệ thống, BM 217 vừa hết chỗ (chú thích 9).
   - `prototype/screen-4.png`: #10 khách nói rõ "9h30 sáng mai cho cả hai mẹ con" → chip "Chắc", giữ đúng BM 205, hộp xác nhận đổi (chú thích 7).
+  - `prototype/screen-5.png`: khách gõ "ừ" khi đang giữ chỗ (không tính là xác nhận), rồi chuyển nhân viên kèm tóm tắt ca (chú thích 10).
 - **Mở thẳng một tình huống bằng link** (dùng khi demo): thêm `#s=<tin nhắn>` vào cuối link, nhiều tin cách nhau bằng `|`. Ví dụ `…/prototype/#s=đổi đi|ừ`.
 
 | Số | Thể hiện gì | Nguyên tắc | Mức tự chủ |
 |---|---|---|---|
-| 1 | Nhãn "Trợ lý đặt chỗ (AI)" | G1 (và Điều 11 Luật AI 134/2025 về minh bạch) | — |
+| 1 | Câu chào đầu: AI làm được gì (tra, giữ chỗ, chuyển nhân viên), không làm gì (không tự đổi, không tự gửi hoàn); nhãn "Trợ lý đặt chỗ (AI)"; trợ lý tự mở lời khi chuyến vừa huỷ | G1, PAIR Mental Models, G3 (và Điều 11 Luật AI 134/2025 về minh bạch) | — |
 | 2 | Chip độ chắc: "Mình chưa chắc" / "Chắc" | G2 | — |
 | 3 | Dòng "Dựa vào" | G11, PAIR Explainability | — |
 | 4 | Câu hỏi lại một câu | G10 | — |
-| 5 | Đếm ngược 20 phút + Nhả chỗ | G9 | tự làm (`giu_cho_chuyen_moi`) |
+| 5 | Đếm ngược 20 phút + Nhả chỗ | G8 | tự làm (`giu_cho_chuyen_moi`) |
 | 6 | Nút Gặp nhân viên, thông báo nhân viên thấy sẵn gì | PAIR Errors + Graceful Failure | tự làm (`chuyen_nhan_vien`) |
-| 7 | Hộp xác nhận đổi vé: chuyến, người, hậu quả | G11, G9 | cần duyệt (`doi_chuyen_bay`) |
-| 8 | Hoàn vé: tick bắt buộc, không có nút "AI gửi giúp" | PAIR Graceful Failure | cấm AI (`gui_yeu_cau_hoan_ve`) |
+| 7 | Hộp xác nhận đổi vé: chuyến, người, hậu quả ("dùng lần đổi miễn phí duy nhất"); chỉ nút này mới đổi vé | G16, PAIR Feedback + Control | cần duyệt (`doi_chuyen_bay`) |
+| 8 | Hoàn vé: tick "không rút lại được" bắt buộc, không có nút "AI gửi giúp" | G16, PAIR Errors + Graceful Failure | cấm AI (`gui_yeu_cau_hoan_ve`) |
 | 9 | Lỗi hệ thống: tra lại chỗ trống trước khi giữ, nhận lỗi về phía mình, ghi giờ tra lại | PAIR Errors, G11 | tự làm (`tra_cuu_dat_cho`, `giu_cho_chuyen_moi`) |
+| 10 | "ừ" hiểu theo chỗ đang giữ; tin chuyển nhân viên ghi nhân viên thấy sẵn gì, "bạn không phải kể lại" | G12 | tự làm (`chuyen_nhan_vien`) |
+| 11 | Danh sách chuyến lọc theo 2 hành khách; BM 217 mờ kèm lý do "không đủ cho 2 người" | G4 | — |
+| 12 | Nút "Chọn chuyến khác" và "Mình bị đổi nhầm" | G9 | sửa lựa chọn tự làm; đổi nhầm thì chuyển nhân viên |
+
+**Vì sao đổi nhãn chú thích:** bản đầu ghi số 7 là "Mức cần duyệt", số 8 là "Mức cấm". Đó là mức tự chủ, không phải nguyên tắc, nên khi bị hỏi "chỗ nào là G__" thì không trỏ được. Nay số 7 và 8 ghi nguyên tắc G16 (mức tự chủ để trong ngoặc). Số 1 chuyển trọng tâm từ cái nhãn sang câu chào, vì G1 là cho biết AI *làm được gì*, không chỉ cho biết đây là AI. Số 5 đổi từ G9 sang G8, vì Nhả chỗ là bỏ một việc AI tự làm, còn G9 (sửa khi AI chọn sai) chuyển sang số 12.
 
 **Quyết định về cách hiện:**
 - **Độ chắc:** chọn chip chữ ("Mình chưa chắc") thay vì phần trăm. Phần trăm giả chính xác và khách không biết 73% nghĩa là gì; chip chữ kèm lý do ("bạn chưa nói chuyến nào") cho khách biết cần làm gì.
