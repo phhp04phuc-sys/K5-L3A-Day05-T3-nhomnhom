@@ -4,3 +4,9 @@
 ai-log.json
 .claude-flow/
 .swarm/
+
+# công cụ + skill nội bộ (bỏ 4 dòng này nếu muốn chia sẻ cho nhóm)
+.claude/
+.agent/
+AGENTS.md
+CLAUDE.md

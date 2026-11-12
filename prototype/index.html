@@ -80,8 +80,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
 .mut{color:var(--mut)}
 .flash{animation:flash 1.6s ease-out}
 @keyframes flash{0%,100%{box-shadow:none}15%,65%{box-shadow:0 0 0 3px #c2410c,0 0 0 9px rgba(194,65,12,.16)}}
-.spin{display:inline-block;width:11px;height:11px;border:2px solid #c9c2b4;border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite;margin-right:6px;vertical-align:-1px}
-@keyframes sp{to{transform:rotate(360deg)}}
+.spin{display:none}
+.dots{display:inline-flex;gap:4px;align-items:center;height:14px;margin-right:4px;vertical-align:middle}
+.dots i{width:7px;height:7px;border-radius:50%;background:#9a9488;animation:dotb 1.1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.16s}.dots i:nth-child(3){animation-delay:.32s}
+@keyframes dotb{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-5px);opacity:1}}
+.aistat{font-size:12.5px;color:var(--mut);padding:2px 6px 6px}.aistat b{color:var(--g)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:#17201b;color:#fff;padding:10px 15px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.22s;z-index:80;max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
@@ -100,6 +104,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
   <div class="chat" id="chat" role="log" aria-live="polite"></div>
   <div class="quick" id="quick"></div>
   <form class="inp" id="form"><input id="txt" placeholder="Gõ tin nhắn (thử ca lạ)..." autocomplete="off" aria-label="Tin nhắn cho trợ lý"><button class="btn pri">Gửi</button></form>
+  <div class="aistat" id="aistat" role="status"></div>
 </div>
 <aside>
   <section>
@@ -208,9 +213,12 @@ function renderStatus(){
 }
 function me(x){msgs.push(`<div class="me">${x}</div>`)}
 function ai(x){msgs.push(`<div class="ai"><div class="who">Trợ lý đặt chỗ (AI)</div>${x}</div>`)}
-function typing(txt){msgs.push(`<div class="ai" id="typing"><div class="who">Trợ lý đặt chỗ (AI)</div><span class="spin"></span><span class="mut">${txt}</span></div>`);render()}
+function typing(txt){msgs.push(`<div class="ai" id="typing" aria-label="Trợ lý đang gõ"><div class="who">Trợ lý đặt chỗ (AI)</div><span class="dots"><i></i><i></i><i></i></span>${txt?`<span class="mut">${txt}</span>`:''}</div>`);render()}
 function stopTyping(){const i=msgs.findIndex(m=>m.includes('id="typing"'));if(i>=0)msgs.splice(i,1)}
-function say(x,pre){if(!pre){ai(x);render();return}typing(pre);setTimeout(()=>{stopTyping();ai(x);render()},560)}
+let INT=false;
+function say(x,pre){if(!pre||INT){ai(x);render();return}typing(pre);setTimeout(()=>{stopTyping();ai(x);render()},560)}
+// Hiện ba chấm "đang gõ" rồi mới trả lời; ms theo độ dài câu trả lời (mock) hoặc theo thời gian gọi AI thật
+function withTyping(fn,ms,txt){typing(txt||'');setTimeout(()=>{stopTyping();INT=true;try{fn()}finally{INT=false}render()},ms==null?640:ms)}
 function render(){
   $('#chat').innerHTML=msgs.join('');$('#chat').scrollTop=1e6;
   const q=['chuyến mấy giờ?','đổi đi','ừ','hoàn tiền hết đi','bồi thường bao nhiêu?'];
@@ -253,7 +261,42 @@ function goRefund(){
   ai('Bạn đã sang trang <b>Hoàn tiền</b> để tự gửi yêu cầu. Trợ lý <b>không gửi thay</b> và chưa gửi gì. Yêu cầu gửi rồi thì <b>không huỷ được</b>. Trong lúc bạn xem, chỗ giữ (nếu có) vẫn còn đếm ngược.');
   render();
 }
-function send(t){t=(t||'').trim();if(!t)return;clock++;me(t);route(t);render()}
+const AI={on:false,model:''};
+function stateStr(){return S.changed?('đã đổi sang '+S.changed+', đã dùng lần đổi miễn phí'):S.hold?('đang tạm giữ '+S.hold+' (chưa đổi vé)'):'chưa giữ chỗ, chưa đổi vé'}
+const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const AILV={tra_cuu_dat_cho:['p-auto','tự làm'],giu_cho_chuyen_moi:['p-auto','tự làm (giữ chỗ, chưa đổi)'],doi_chuyen_bay:['p-ask','cần khách bấm → chỉ giữ chỗ và hỏi'],gui_yeu_cau_hoan_ve:['p-no','cấm AI → khách tự gửi'],chuyen_nhan_vien:['p-auto','tự làm'],tra_loi_thong_tin:['p-auto','chỉ trả lời từ dữ liệu'],hoi_lai:['p-auto','hỏi lại, không gọi tool'],tu_choi:['p-no','từ chối']};
+function send(t){
+  t=(t||'').trim();if(!t)return;clock++;me(t);render();
+  if(AI.on){realRoute(t);return}
+  const ms=Math.min(1100,520+t.length*14);
+  withTyping(()=>route(t),ms);
+}
+async function realRoute(t){
+  typing('');const t0=Date.now();
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:t,state:stateStr()})});
+    const o=await r.json();if(!r.ok)throw new Error(o.error||r.status);
+    const wait=Math.max(0,500-(Date.now()-t0));
+    setTimeout(()=>{stopTyping();INT=true;try{applyAI(t,o)}finally{INT=false}render()},wait);
+  }catch(e){
+    stopTyping();INT=true;
+    try{ai(`<span class="conf lo"><span class="n">2</span>AI thật không trả lời, dùng kịch bản có sẵn</span> <small class="mut">${esc(e.message)}</small>`);route(t)}finally{INT=false}render();
+  }
+}
+function appendLast(h){const i=msgs.length-1;if(i>=0&&/<\/div>$/.test(msgs[i]))msgs[i]=msgs[i].replace(/<\/div>$/,h+'</div>');else ai(h)}
+function applyAI(t,o){
+  const [lv,lab]=AILV[o.tool]||AILV.hoi_lai;
+  log('ai_chon_tool',lv,`${AI.model||'DeepSeek'} chọn ${o.tool} · độ chắc ${esc(o.do_chac)} · mức tự chủ: ${lab}`);
+  const info=`<div class="ev" data-n="3"><span class="n">3</span>AI thật chọn <b>${esc(o.tool)}</b> · độ chắc: ${esc(o.do_chac)} · mức tự chủ: ${lab}<br>${esc(o.ly_do)}</div>`;
+  const conf=o.do_chac==='cao'?hi('Chắc'):lo(o.do_chac==='vua'?'Khá chắc':'Mình chưa chắc');
+  const n=norm(t),k=o.tool;
+  if(k==='tra_cuu_dat_cho'){route('mấy giờ');return}
+  if(k==='giu_cho_chuyen_moi'||k==='doi_chuyen_bay'){ // AI chọn tool đổi vé: hệ thống chỉ giữ chỗ và hỏi, KHÔNG tự đổi
+    const named=/bm ?20[15]|07:00|9 ?h ?30|09:30|ca hai|me con/.test(n);route(named?t:'đổi đi');appendLast(info);return}
+  if(k==='gui_yeu_cau_hoan_ve'){route('hoàn tiền');appendLast(info);return}   // AI không có đường gửi hoàn; chỉ cảnh báo, khách tự gửi
+  if(k==='chuyen_nhan_vien'){ai(`${conf} ${esc(o.cau_noi)}`+info+B(STAFFBTN));return}
+  ai(`${conf} ${esc(o.cau_noi)}`+info+B(STAFFBTN));
+}
 function route(t){
   const n=norm(t);
   const plain=/^[\x00-\x7F]*$/.test(t);
@@ -310,6 +353,7 @@ function route(t){
     ai(`${lo(plain?'Mình đọc được tin không dấu, nhưng vẫn thiếu chuyến và thiếu người':'Mình chưa chắc: bạn chưa nói chuyến nào, cho ai')}<span class="n">4</span><b>Bạn muốn đổi sang chuyến nào, cho cả An và bé Bình?</b> ${S.sold217?'BM 217 tối nay đã hết chỗ.':'BM 217 tối nay chỉ còn 1 chỗ, không đủ cho 2 người nên mình không đề xuất.'} Trong lúc bạn chọn, mình tạm giữ chuyến sớm nhất đủ chỗ cho cả hai:`+opts()+holdBox('BM 201')+EV+confirmBtns('BM 201'));return}
   ai(`${lo('Mình chưa chắc hiểu ý bạn')} Mình không đoán. Bạn muốn: đổi chuyến, hoàn vé, hay gặp nhân viên?`+B(`<button class="btn pri" onclick="send('đổi đi')">Đổi chuyến</button><button class="btn" onclick="send('hoàn tiền hết đi')">Hoàn vé</button>${STAFFBTN}`));
 }
+['pick','more','doChange','toStaff','goRefund','release','reHold'].forEach(nm=>{const f=window[nm];window[nm]=function(...a){if(INT)return f.apply(this,a);withTyping(()=>f.apply(this,a),560)}});
 function flash(n){
   const list=[...document.querySelectorAll('[data-n="'+n+'"]')].filter(e=>e.offsetParent!==null);
   if(!list.length){hint(n>=7?'Chú thích #'+n+' chỉ hiện khi bạn bấm nút tương ứng (mức '+(n===7?'cần duyệt':'cấm AI')+').':'Chú thích #'+n+' hiện ở câu trả lời — bấm một tình huống trước.');return}
@@ -337,6 +381,7 @@ ai('<span data-n="1"><span class="n">1</span>Mình là trợ lý AI của Đặt
 render();
 // Mở thẳng một tình huống bằng link, ví dụ #s=đổi đi|ừ&c=BM 201 (để chụp ảnh và demo nhanh)
 (()=>{try{const h=new URLSearchParams(location.hash.slice(1));(h.get('s')||'').split('|').filter(Boolean).forEach(send);if(h.get('c'))askChange(h.get('c'));if(h.has('staff'))toStaff();if(h.get('m'))$('#'+h.get('m')).classList.add('show')}catch(e){}})();
+fetch('/api/ping').then(r=>r.json()).then(p=>{AI.on=!!p.ai;AI.model=p.model||'';$('#aistat').innerHTML=p.ai?'<b>AI thật: BẬT</b> ('+esc(p.model)+' qua máy chủ local). AI chỉ chọn tool, mức tự chủ vẫn chặn việc không đảo được.':'AI thật: tắt (thiếu key trong .env), đang chạy kịch bản có sẵn.'}).catch(()=>{$('#aistat').textContent='Chế độ kịch bản có sẵn. Muốn AI thật: chạy python3 server.py ở máy mình.'});
 </script>
 </body>
 </html>
